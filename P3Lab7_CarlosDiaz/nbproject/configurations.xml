@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>nbproject/Mensaje.h</itemPath>
       <itemPath>nbproject/Persona.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -13,6 +14,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>nbproject/Mensaje.cpp</itemPath>
       <itemPath>nbproject/Persona.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
@@ -40,6 +42,10 @@
       </compileType>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="nbproject/Mensaje.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="nbproject/Mensaje.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="nbproject/Persona.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="nbproject/Persona.h" ex="false" tool="3" flavor2="0">
@@ -66,6 +72,10 @@
         </asmTool>
       </compileType>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="nbproject/Mensaje.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="nbproject/Mensaje.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="nbproject/Persona.cpp" ex="false" tool="1" flavor2="0">
       </item>

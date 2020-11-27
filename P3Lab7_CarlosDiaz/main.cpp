@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>           //librería estándar de los vectores
 #include <string>           //librería estándar de las cadenas
+#include <bits/stdc++.h>    //para hacer string to charArray
 
 #include "nbproject/Persona.h"
 
@@ -12,7 +13,8 @@ using std::string;
 using std::to_string;
 
 //prototipo de funciones
-bool estadoRegistro(vector<Persona>, int, string, string);      //identifica si un usuario está registrado en el feisbu
+//bool estadoRegistro(vector<Persona>, int, string, string);      //identifica si un usuario está registrado en el feisbu
+string encriptamiento(bool, string, int);
 
 int main(int argc, char** argv) {
     int op = 0, sizeV=0;
@@ -62,7 +64,7 @@ int main(int argc, char** argv) {
                 cout << "Ingresar contraseña: ";
                 cin >> contra;
                 
-                //TO DO: buscar usuario entre los registrados
+                //buscar usuario entre los registrados
                 bool reg = false;
                 int posUser = 0;
                 for(int i=0; i<pRegistrados.size(); i++){
@@ -102,17 +104,28 @@ int main(int argc, char** argv) {
                                 cout << "Mensaje: ";
                                 cin >> mensaje;
                                 
-                                //TO DO: ENCRIPTAR MENSAJE Y ENVIARLO
-                                //pRegistrados[posDestinatario]->getLlave();
-                                pRegistrados[posDestinatario]->addMsj(mensaje);
+                                //cout << to_string(pRegistrados[posDestinatario]->getLlave());
+                                int llave = pRegistrados[posDestinatario]->getLlave();
+                                string mensajeEncriptado = encriptamiento(true, mensaje, llave);
+                                cout << "Mensaje encriptado = " << mensajeEncriptado << endl;
+                                pRegistrados[posDestinatario]->addMsj(mensajeEncriptado);
                                 
                                 cout << "Mensaje enviado correctamente a " << pRegistrados[posDestinatario]->getNombre() << endl;
                             } break;
                             case 2: {
+                                /*int msjVer=0;
+                                cout << "MENSAJES RECIBIDOS" << endl;
+                                for(int i=0; i< (pRegistrados[posUser]->getRecibidos.size()); i++){
+                                    cout << i << ".- " << pRegistrados[posUser]->getRecibidos[i];
+                                }
+                                
+                                cout << "Ingrese posición del mensaje a ver: " << endl;
+                                cin >> msjVer;
+                                encriptamiento(false, pRegistrados[posUser]->getRecibidos[msjVer], 3);*/
                                 
                             } break;
                             case 3: {
-                                
+                                cout << "Mi llave es: " << pRegistrados[posUser]->getLlave();
                             } break;
                             case 4: {
                                 cout << "Nos vemos " << endl;
@@ -138,7 +151,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-bool estadoRegistro(vector<Persona> registrados, int sizeV, string nombre, string contra){
+/*bool estadoRegistro(vector<Persona> registrados, int sizeV, string nombre, string contra){
     cout <<  ((Persona) registrados[0]).getNombre() ;
     
     
@@ -150,4 +163,83 @@ bool estadoRegistro(vector<Persona> registrados, int sizeV, string nombre, strin
             return false;
         }
     }
+}*/
+
+string encriptamiento(bool encriptar, string mensaje, int llave){
+    string mensaje2 = "";
+    if(llave==0){
+        return mensaje;
+    } else{
+        if(encriptar){
+            
+            //int llaveOriginal = llave;
+            
+            for(int i=0; i<(int) (mensaje.size()/llave); i++){
+                string cadenaReducida="";
+                if(i==0){
+                    //cout << mensaje.substr(0, llave) << endl;
+                    cadenaReducida = mensaje.substr(0, llave);
+                    
+                } else {
+                    //cout << mensaje.substr(llave*i, llaveOriginal) << endl;
+                    cadenaReducida = mensaje.substr(llave*i, llave);
+                }
+                char char_array[cadenaReducida.length() + 1];
+                strcpy(char_array, cadenaReducida.c_str());
+
+                for(int j=0; j<cadenaReducida.length(); j++){
+                    if(i%2==1)
+                        char_array[j] = char_array[j]-llave;
+                    else if(i%2==0)
+                        char_array[j] = char_array[j]+llave;
+                    
+                    mensaje2+=char_array[j];
+                }
+
+                /*for(int i=0; i<cadenaReducida.length(); i++){
+                    cout << char_array[i] << " ";
+                }
+                cout << "" << endl;*/
+                
+            }
+            
+            return encriptamiento(true, mensaje2, llave-1);
+        } else{
+            
+            for(int i=0; i<(int) (mensaje.size()/llave); i++){
+                string cadenaReducida="";
+                if(i==0){
+                    //cout << mensaje.substr(0, llave) << endl;
+                    cadenaReducida = mensaje.substr(0, llave);
+                    
+                } else {
+                    //cout << mensaje.substr(llave*i, llaveOriginal) << endl;
+                    cadenaReducida = mensaje.substr(llave*i, llave);
+                }
+                char char_array[cadenaReducida.length() + 1];
+                strcpy(char_array, cadenaReducida.c_str());
+
+                for(int j=0; j<cadenaReducida.length(); j++){
+                    if(i%2==1)
+                        char_array[j] = char_array[j]+llave;
+                    else if(i%2==0)
+                        char_array[j] = char_array[j]-llave;
+                    
+                    mensaje2+=char_array[j];
+                }
+
+                /*for(int i=0; i<cadenaReducida.length(); i++){
+                    cout << char_array[i] << " ";
+                }
+                cout << "" << endl;*/
+                
+            }
+            
+            return encriptamiento(false, mensaje2, llave-1);
+        }
+        
+        
+    }
+    
+    
 }
