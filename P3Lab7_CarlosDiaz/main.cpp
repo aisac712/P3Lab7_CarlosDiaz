@@ -2,6 +2,8 @@
 #include <vector>           //librería estándar de los vectores
 #include <string>           //librería estándar de las cadenas
 #include <bits/stdc++.h>    //para hacer string to charArray
+#include <math.h>           //para usar la funcion ceil() q redondea al entero mayor
+#include <sstream>          //parsear string a int en mi token:                 en [0] está destinatario; en[1] el mensaje encriptado; y en [2] la llave
 
 #include "nbproject/Persona.h"
 
@@ -50,8 +52,8 @@ int main(int argc, char** argv) {
                 //Persona temp(nombre, contra, llave);
                 
                 pRegistrados.push_back(temp);
-                cout << pRegistrados[0] -> getNombre() << " n" << endl;
-                cout << to_string(pRegistrados.size()) << "*" << endl;
+                //cout << pRegistrados[0] -> getNombre() << " n" << endl;
+                //cout << to_string(pRegistrados.size()) << "*" << endl;
                 sizeV++;
                 
                 cout << "Cuenta creada exitosamente" << endl;
@@ -80,7 +82,7 @@ int main(int argc, char** argv) {
                     cout << "Bienvenido " << pRegistrados[posUser]->getNombre() << endl;
                     while(op2!=4){
                         cout << "1. Enviar mensaje" << endl;
-                        cout << "2. Ver mensaje" << endl;
+                        cout << "2. Ver mensajes" << endl;
                         cout << "3. Ver mi llave" << endl;
                         cout << "4. Salir" << endl;
                         cout << "" << endl;
@@ -108,24 +110,54 @@ int main(int argc, char** argv) {
                                 int llave = pRegistrados[posDestinatario]->getLlave();
                                 string mensajeEncriptado = encriptamiento(true, mensaje, llave);
                                 cout << "Mensaje encriptado = " << mensajeEncriptado << endl;
-                                pRegistrados[posDestinatario]->addMsj(mensajeEncriptado);
+                                
+                                string lineaUsuario = "Mensaje de " + pRegistrados[posUser]->getNombre() +"#";
+                                lineaUsuario += mensajeEncriptado + "#";
+                                lineaUsuario += to_string( pRegistrados[posDestinatario]->getLlave() )+"#";
+                                
+                                pRegistrados[posDestinatario]->addMsj(lineaUsuario);
                                 
                                 cout << "Mensaje enviado correctamente a " << pRegistrados[posDestinatario]->getNombre() << endl;
                             } break;
                             case 2: {
-                                /*int msjVer=0;
+                                int msjVer=0;
                                 cout << "MENSAJES RECIBIDOS" << endl;
-                                for(int i=0; i< (pRegistrados[posUser]->getRecibidos.size()); i++){
-                                    cout << i << ".- " << pRegistrados[posUser]->getRecibidos[i];
+                                for(int i=0; i< (pRegistrados[posUser]->getRecibidos().size()); i++){
+                                    
+                                    string lineaUsuario = pRegistrados[posUser]->getRecibidos().at(i);                      //El mensajese ve: Mensaje de aisoc#hola#3
+                                    vector<string> tokensMensaje;
+                                    
+                                    for (auto j = strtok(&lineaUsuario[0], "#"); j != NULL; j = strtok(NULL, "#")){         //uso tokens envés de objetos jeje
+                                        tokensMensaje.push_back(j);                                                         //en [0] está destinatario; [1] el mensaje encriptado; [2] la llave
+                                    }
+                                    
+                                    cout << i << ".- " << tokensMensaje[0] << " " << tokensMensaje[1] << endl;;                                        //imprime: hola
                                 }
-                                
-                                cout << "Ingrese posición del mensaje a ver: " << endl;
-                                cin >> msjVer;
-                                encriptamiento(false, pRegistrados[posUser]->getRecibidos[msjVer], 3);*/
+                                cout << "" << endl;
+                                if(pRegistrados[posUser]->getRecibidos().size()!=0){
+                                    cout << "Ingrese posición del mensaje a ver: ";
+                                    cin >> msjVer;
+
+                                    string lineaUsuario = pRegistrados[posUser]->getRecibidos().at(msjVer);
+                                    vector<string> tokensMensaje;
+
+                                    for (auto j = strtok(&lineaUsuario[0], "#"); j != NULL; j = strtok(NULL, "#")){         //uso tokens envés de objetos jeje
+                                        tokensMensaje.push_back(j);
+                                    }
+
+                                    std::stringstream intLlave(tokensMensaje[2]);
+                                    int llave = 0; 
+                                    intLlave >> llave; 
+
+                                    string msjDesencriptado = encriptamiento(false, tokensMensaje[1], llave);     //en [0] está destinatario; [1] el mensaje encriptado; [2] la llave
+                                    cout << "El mensaje dice: " << msjDesencriptado << endl;
+                                    cout << "" << endl;
+                                } else
+                                    cout << "No tenés mensajes por mostrar" << endl;
                                 
                             } break;
                             case 3: {
-                                cout << "Mi llave es: " << pRegistrados[posUser]->getLlave();
+                                cout << "Mi llave es: " << pRegistrados[posUser]->getLlave() << endl;;
                             } break;
                             case 4: {
                                 cout << "Nos vemos " << endl;
@@ -174,7 +206,8 @@ string encriptamiento(bool encriptar, string mensaje, int llave){
             
             //int llaveOriginal = llave;
             
-            for(int i=0; i<(int) (mensaje.size()/llave); i++){
+            for(int i=0; i< ceil( (double)mensaje.size()/ (double)llave); i++){
+                //cout << std::to_string( ceil( (double)mensaje.size()/ (double)llave) ) << endl;
                 string cadenaReducida="";
                 if(i==0){
                     //cout << mensaje.substr(0, llave) << endl;
@@ -196,17 +229,17 @@ string encriptamiento(bool encriptar, string mensaje, int llave){
                     mensaje2+=char_array[j];
                 }
 
-                /*for(int i=0; i<cadenaReducida.length(); i++){
-                    cout << char_array[i] << " ";
+                for(int i=0; i<cadenaReducida.length(); i++){
+                    //cout << char_array[i] << " ";
                 }
-                cout << "" << endl;*/
+                //cout << "" << endl;
                 
             }
             
             return encriptamiento(true, mensaje2, llave-1);
         } else{
             
-            for(int i=0; i<(int) (mensaje.size()/llave); i++){
+            for(int i=0; i<ceil( (double)mensaje.size()/ (double)llave); i++){
                 string cadenaReducida="";
                 if(i==0){
                     //cout << mensaje.substr(0, llave) << endl;
@@ -228,10 +261,10 @@ string encriptamiento(bool encriptar, string mensaje, int llave){
                     mensaje2+=char_array[j];
                 }
 
-                /*for(int i=0; i<cadenaReducida.length(); i++){
-                    cout << char_array[i] << " ";
+                for(int i=0; i<cadenaReducida.length(); i++){
+                    //cout << char_array[i] << " ";
                 }
-                cout << "" << endl;*/
+                //cout << "" << endl;
                 
             }
             
